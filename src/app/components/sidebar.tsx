@@ -1,6 +1,7 @@
 "use client"
 
 import Link from "next/link"
+import Image from "next/image"
 import { usePathname } from "next/navigation"
 import { LayoutDashboard, Shield, Users, Key, Menu, Settings, LineChart, Lock, Database, Activity } from 'lucide-react'
 import { cn } from "@/lib/utils"
@@ -49,10 +50,16 @@ export function Sidebar() {
         !isOpen && "-translate-x-full md:translate-x-0"
       )}>
         <div className="p-6">
-        <h1 className="text-xl font-bold text-foreground flex items-center gap-2">
-          <Database className="h-6 w-6" />
-          Oracle Manager
-        </h1>
+          <Link href="/" className="flex items-center gap-2">
+            <Image
+              src="/icons/logo2.png"
+              alt="Oracle Manager Logo"
+              width={150}
+              height={40}
+              className="h-auto w-auto"
+              priority
+            />
+          </Link>
         </div>
         <nav className="flex-1 space-y-6 px-4">
           {navigation.map((group) => (
