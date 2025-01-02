@@ -12,6 +12,7 @@
   export interface Role {
     name: string;
     privileges: string[];
+    description?: String;
   }
   
   export interface Privilege {

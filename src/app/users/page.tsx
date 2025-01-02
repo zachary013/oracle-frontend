@@ -22,51 +22,53 @@ export default function UsersPage() {
 
   const fetchUsers = async () => {
     try {
-      setLoading(true);
-      const response = await fetch(endpoints.users);
+      setLoading(true)
+      const response = await fetch(endpoints.users)
       if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
+        throw new Error(`HTTP error! status: ${response.status}`)
       }
-      const data = await response.json();
-      setUsers(data);
+      const data = await response.json()
+      setUsers(data)
     } catch (e) {
-      console.error("Failed to fetch users:", e);
-      setError("Failed to load users. Please try again later.");
+      console.error("Failed to fetch users:", e)
+      setError("Failed to load users. Please try again later.")
     } finally {
-      setLoading(false);
+      setLoading(false)
     }
-  };
+  }
 
   useEffect(() => {
-    fetchUsers();
-  }, []);
+    fetchUsers()
+  }, [])
 
   return (
-    <div className="space-y-6">
-      <div className="flex items-center justify-between">
+    <div className="space-y-6 p-6">
+      <div className="flex flex-col space-y-4 sm:flex-row sm:items-center sm:justify-between sm:space-y-0">
         <div>
           <h1 className="text-3xl font-bold tracking-tight">Oracle Users</h1>
           <p className="text-muted-foreground">
             Manage Oracle database users and their permissions
           </p>
         </div>
-        <Dialog open={isCreateDialogOpen} onOpenChange={setIsCreateDialogOpen}>
-          <Button onClick={() => setIsCreateDialogOpen(true)}>
-            <Plus className="mr-2 h-4 w-4" />
-            Create User
-          </Button>
-          <DialogContent className="sm:max-w-[600px]">
-            <DialogHeader>
-              <DialogTitle>Create New Oracle User</DialogTitle>
-            </DialogHeader>
-            <CreateUserForm
-              onSuccess={() => {
-                setIsCreateDialogOpen(false)
-                fetchUsers();
-              }}
-            />
-          </DialogContent>
-        </Dialog>
+        <div className="flex items-center space-x-4">
+          <Dialog open={isCreateDialogOpen} onOpenChange={setIsCreateDialogOpen}>
+            <Button onClick={() => setIsCreateDialogOpen(true)} size="default">
+              <Plus className="mr-2 h-4 w-4" />
+              Create User
+            </Button>
+            <DialogContent className="sm:max-w-[600px]">
+              <DialogHeader>
+                <DialogTitle>Create New Oracle User</DialogTitle>
+              </DialogHeader>
+              <CreateUserForm
+                onSuccess={() => {
+                  setIsCreateDialogOpen(false)
+                  fetchUsers()
+                }}
+              />
+            </DialogContent>
+          </Dialog>
+        </div>
       </div>
 
       <UsersTable
