@@ -49,7 +49,10 @@ export function Sidebar() {
         !isOpen && "-translate-x-full md:translate-x-0"
       )}>
         <div className="p-6">
-          <h1 className="text-xl font-bold text-foreground">Oracle Manager</h1>
+        <h1 className="text-xl font-bold text-foreground flex items-center gap-2">
+          <Database className="h-6 w-6" />
+          Oracle Manager
+        </h1>
         </div>
         <nav className="flex-1 space-y-6 px-4">
           {navigation.map((group) => (
