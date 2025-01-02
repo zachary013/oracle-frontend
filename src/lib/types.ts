@@ -1,10 +1,13 @@
-export interface User {
+  export interface User {
     username: string;
+    defaultTablespace: string;
+    temporaryTablespace: string;
     status: 'LOCKED' | 'UNLOCKED';
     roles: string[];
     created_at?: string;
     last_login?: string;
   }
+  
   
   export interface Role {
     name: string;

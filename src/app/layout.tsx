@@ -4,6 +4,7 @@ import "./globals.css"
 import { ThemeProvider } from "./components/theme-provider"
 import { Sidebar } from "./components/sidebar"
 import { SidebarProvider } from "./components/ui/sidebar-context"
+import { Toaster } from "sonner"
 
 const inter = Inter({ subsets: ["latin"] })
 
@@ -22,7 +23,7 @@ export default function RootLayout({
       <body className={inter.className}>
         <ThemeProvider
           attribute="class"
-          defaultTheme="dark"
+          defaultTheme="system"
           enableSystem
           disableTransitionOnChange
         >
@@ -36,6 +37,7 @@ export default function RootLayout({
               </main>
             </div>
           </SidebarProvider>
+          <Toaster position="top-right" />
         </ThemeProvider>
       </body>
     </html>

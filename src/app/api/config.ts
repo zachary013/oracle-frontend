@@ -5,3 +5,4 @@ export const endpoints = {
   roles: `${API_BASE_URL}/roles`,
   privileges: `${API_BASE_URL}/privileges`,
 };
+

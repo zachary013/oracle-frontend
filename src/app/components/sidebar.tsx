@@ -2,17 +2,32 @@
 
 import Link from "next/link"
 import { usePathname } from "next/navigation"
-import { LayoutDashboard, Shield, Users, Key, Menu } from 'lucide-react'
+import { LayoutDashboard, Shield, Users, Key, Menu, Settings, LineChart, Lock, Database, Activity } from 'lucide-react'
 import { cn } from "@/lib/utils"
-import { ThemeToggle } from "./theme-toggle"
 import { useSidebar } from "../components/ui/sidebar-context"
 import { Button } from "@/components/ui/button"
+import { Separator } from "@/components/ui/separator"
 
 const navigation = [
-  { name: "Dashboard", href: "/", icon: LayoutDashboard },
-  { name: "Users", href: "/users", icon: Users },
-  { name: "Roles", href: "/roles", icon: Shield },
-  { name: "Privileges", href: "/privileges", icon: Key },
+  {
+    name: "Core",
+    items: [
+      { name: "Dashboard", href: "/", icon: LayoutDashboard },
+      { name: "Users", href: "/users", icon: Users },
+      { name: "Roles", href: "/roles", icon: Shield },
+      { name: "Privileges", href: "/privileges", icon: Key },
+    ]
+  },
+  {
+    name: "System",
+    items: [
+      { name: "Performance", href: "/performance", icon: Activity },
+      { name: "Security", href: "/security", icon: Lock },
+      { name: "Database", href: "/database", icon: Database },
+      { name: "Monitoring", href: "/monitoring", icon: LineChart },
+      { name: "Settings", href: "/settings", icon: Settings },
+    ]
+  }
 ]
 
 export function Sidebar() {
@@ -36,29 +51,38 @@ export function Sidebar() {
         <div className="p-6">
           <h1 className="text-xl font-bold text-foreground">Oracle Manager</h1>
         </div>
-        <nav className="flex-1 space-y-1 px-4">
-          {navigation.map((item) => {
-            const isActive = pathname === item.href
-            return (
-              <Link
-                key={item.name}
-                href={item.href}
-                className={cn(
-                  "flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium",
-                  isActive
-                    ? "bg-primary text-primary-foreground"
-                    : "text-muted-foreground hover:bg-accent hover:text-accent-foreground"
-                )}
-              >
-                <item.icon className="h-5 w-5" />
-                {item.name}
-              </Link>
-            )
-          })}
+        <nav className="flex-1 space-y-6 px-4">
+          {navigation.map((group) => (
+            <div key={group.name}>
+              <h2 className="mb-2 px-2 text-sm font-semibold tracking-tight text-muted-foreground">
+                {group.name}
+              </h2>
+              <div className="space-y-1">
+                {group.items.map((item) => {
+                  const isActive = pathname === item.href
+                  return (
+                    <Link
+                      key={item.name}
+                      href={item.href}
+                      className={cn(
+                        "flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium",
+                        isActive
+                          ? "bg-primary text-primary-foreground"
+                          : "text-muted-foreground hover:bg-accent hover:text-accent-foreground"
+                      )}
+                    >
+                      <item.icon className="h-5 w-5" />
+                      {item.name}
+                    </Link>
+                  )
+                })}
+              </div>
+              {group.name === "Core" && <Separator className="my-4" />}
+            </div>
+          ))}
         </nav>
-        <div className="p-4 flex justify-between items-center">
+        <div className="p-4">
           <span className="text-xs text-muted-foreground">© 2024 Oracle Manager</span>
-          <ThemeToggle />
         </div>
       </div>
     </>

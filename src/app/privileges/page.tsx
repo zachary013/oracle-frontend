@@ -3,77 +3,77 @@
 import { useState, useEffect } from "react"
 import { Button } from "@/components/ui/button"
 import { Plus } from 'lucide-react'
-import UsersTable from "../components/users-table"
+import PrivilegesTable from "../components/privileges-table"
 import {
   Dialog,
   DialogContent,
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog"
-import { CreateUserForm } from "../components/create-user-form"
-import { User } from "@/lib/types"
-import { endpoints } from "../api/config"
+import { CreatePrivilegeForm } from "../components/create-privilege-form"
+import { Privilege } from "@/lib/types"
+import { endpoints } from "@/app/api/config"
 
-export default function UsersPage() {
+export default function PrivilegesPage() {
   const [isCreateDialogOpen, setIsCreateDialogOpen] = useState(false)
-  const [users, setUsers] = useState<User[]>([])
+  const [privileges, setPrivileges] = useState<Privilege[]>([])
   const [error, setError] = useState<string>("")
   const [loading, setLoading] = useState(true)
 
-  const fetchUsers = async () => {
+  const fetchPrivileges = async () => {
     try {
-      setLoading(true);
-      const response = await fetch(endpoints.users);
+      setLoading(true)
+      const response = await fetch(endpoints.privileges)
       if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
+        throw new Error(`HTTP error! status: ${response.status}`)
       }
-      const data = await response.json();
-      setUsers(data);
+      const data = await response.json()
+      setPrivileges(data)
     } catch (e) {
-      console.error("Failed to fetch users:", e);
-      setError("Failed to load users. Please try again later.");
+      console.error("Failed to fetch privileges:", e)
+      setError("Failed to load privileges. Please try again later.")
     } finally {
-      setLoading(false);
+      setLoading(false)
     }
-  };
+  }
 
   useEffect(() => {
-    fetchUsers();
-  }, []);
+    fetchPrivileges()
+  }, [])
 
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-3xl font-bold tracking-tight">Oracle Users</h1>
+          <h1 className="text-3xl font-bold tracking-tight">Oracle Privileges</h1>
           <p className="text-muted-foreground">
-            Manage Oracle database users and their permissions
+            Manage system and object privileges
           </p>
         </div>
         <Dialog open={isCreateDialogOpen} onOpenChange={setIsCreateDialogOpen}>
           <Button onClick={() => setIsCreateDialogOpen(true)}>
             <Plus className="mr-2 h-4 w-4" />
-            Create User
+            Create Privilege
           </Button>
           <DialogContent className="sm:max-w-[600px]">
             <DialogHeader>
-              <DialogTitle>Create New Oracle User</DialogTitle>
+              <DialogTitle>Create New Privilege</DialogTitle>
             </DialogHeader>
-            <CreateUserForm
+            <CreatePrivilegeForm
               onSuccess={() => {
                 setIsCreateDialogOpen(false)
-                fetchUsers();
+                fetchPrivileges()
               }}
             />
           </DialogContent>
         </Dialog>
       </div>
 
-      <UsersTable
-        users={users}
+      <PrivilegesTable
+        privileges={privileges}
         error={error}
         loading={loading}
-        setUsers={setUsers}
+        setPrivileges={setPrivileges}
         setError={setError}
         setLoading={setLoading}
       />

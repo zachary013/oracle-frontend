@@ -3,77 +3,77 @@
 import { useState, useEffect } from "react"
 import { Button } from "@/components/ui/button"
 import { Plus } from 'lucide-react'
-import UsersTable from "../components/users-table"
+import RolesTable from "../components/roles-table"
 import {
   Dialog,
   DialogContent,
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog"
-import { CreateUserForm } from "../components/create-user-form"
-import { User } from "@/lib/types"
-import { endpoints } from "../api/config"
+import { CreateRoleForm } from "../components/create-role-form"
+import { Role } from "@/lib/types"
+import { endpoints } from "@/app/api/config"
 
-export default function UsersPage() {
+export default function RolesPage() {
   const [isCreateDialogOpen, setIsCreateDialogOpen] = useState(false)
-  const [users, setUsers] = useState<User[]>([])
+  const [roles, setRoles] = useState<Role[]>([])
   const [error, setError] = useState<string>("")
   const [loading, setLoading] = useState(true)
 
-  const fetchUsers = async () => {
+  const fetchRoles = async () => {
     try {
-      setLoading(true);
-      const response = await fetch(endpoints.users);
+      setLoading(true)
+      const response = await fetch(endpoints.roles)
       if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
+        throw new Error(`HTTP error! status: ${response.status}`)
       }
-      const data = await response.json();
-      setUsers(data);
+      const data = await response.json()
+      setRoles(data)
     } catch (e) {
-      console.error("Failed to fetch users:", e);
-      setError("Failed to load users. Please try again later.");
+      console.error("Failed to fetch roles:", e)
+      setError("Failed to load roles. Please try again later.")
     } finally {
-      setLoading(false);
+      setLoading(false)
     }
-  };
+  }
 
   useEffect(() => {
-    fetchUsers();
-  }, []);
+    fetchRoles()
+  }, [])
 
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-3xl font-bold tracking-tight">Oracle Users</h1>
+          <h1 className="text-3xl font-bold tracking-tight">Oracle Roles</h1>
           <p className="text-muted-foreground">
-            Manage Oracle database users and their permissions
+            Manage database roles and their associated privileges
           </p>
         </div>
         <Dialog open={isCreateDialogOpen} onOpenChange={setIsCreateDialogOpen}>
           <Button onClick={() => setIsCreateDialogOpen(true)}>
             <Plus className="mr-2 h-4 w-4" />
-            Create User
+            Create Role
           </Button>
           <DialogContent className="sm:max-w-[600px]">
             <DialogHeader>
-              <DialogTitle>Create New Oracle User</DialogTitle>
+              <DialogTitle>Create New Role</DialogTitle>
             </DialogHeader>
-            <CreateUserForm
+            <CreateRoleForm
               onSuccess={() => {
                 setIsCreateDialogOpen(false)
-                fetchUsers();
+                fetchRoles()
               }}
             />
           </DialogContent>
         </Dialog>
       </div>
 
-      <UsersTable
-        users={users}
+      <RolesTable
+        roles={roles}
         error={error}
         loading={loading}
-        setUsers={setUsers}
+        setRoles={setRoles}
         setError={setError}
         setLoading={setLoading}
       />
