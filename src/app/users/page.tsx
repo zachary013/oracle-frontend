@@ -11,12 +11,17 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog"
 import { CreateUserForm } from "../components/create-user-form"
+import { EditUserForm } from "../components/edit-user-form"
+import { ManageRoles } from "../components/manage-roles"
 import { User } from "@/lib/types"
 import { endpoints } from "../api/config"
 
 export default function UsersPage() {
   const [isCreateDialogOpen, setIsCreateDialogOpen] = useState(false)
+  const [isEditDialogOpen, setIsEditDialogOpen] = useState(false)
+  const [isManageRolesDialogOpen, setIsManageRolesDialogOpen] = useState(false)
   const [users, setUsers] = useState<User[]>([])
+  const [selectedUser, setSelectedUser] = useState<User | null>(null)
   const [error, setError] = useState<string>("")
   const [loading, setLoading] = useState(true)
 
@@ -40,6 +45,16 @@ export default function UsersPage() {
   useEffect(() => {
     fetchUsers()
   }, [])
+
+  const handleEditUser = (user: User) => {
+    setSelectedUser(user)
+    setIsEditDialogOpen(true)
+  }
+
+  const handleManageRoles = (user: User) => {
+    setSelectedUser(user)
+    setIsManageRolesDialogOpen(true)
+  }
 
   return (
     <div className="space-y-6 p-6">
@@ -78,7 +93,43 @@ export default function UsersPage() {
         setUsers={setUsers}
         setError={setError}
         setLoading={setLoading}
+        onEditUser={handleEditUser}
+        onManageRoles={handleManageRoles}
       />
+
+      <Dialog open={isEditDialogOpen} onOpenChange={setIsEditDialogOpen}>
+        <DialogContent className="sm:max-w-[600px]">
+          <DialogHeader>
+            <DialogTitle>Edit User</DialogTitle>
+          </DialogHeader>
+          {selectedUser && (
+            <EditUserForm
+              user={selectedUser}
+              onSuccess={() => {
+                setIsEditDialogOpen(false)
+                fetchUsers()
+              }}
+            />
+          )}
+        </DialogContent>
+      </Dialog>
+
+      <Dialog open={isManageRolesDialogOpen} onOpenChange={setIsManageRolesDialogOpen}>
+        <DialogContent className="sm:max-w-[600px]">
+          <DialogHeader>
+            <DialogTitle>Manage Roles</DialogTitle>
+          </DialogHeader>
+          {selectedUser && (
+            <ManageRoles
+              username={selectedUser.username}
+              onSuccess={() => {
+                setIsManageRolesDialogOpen(false)
+                fetchUsers()
+              }}
+            />
+          )}
+        </DialogContent>
+      </Dialog>
     </div>
   )
 }

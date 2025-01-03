@@ -3,7 +3,7 @@
 import Link from "next/link"
 import Image from "next/image"
 import { usePathname } from "next/navigation"
-import { LayoutDashboard, Shield, Users, Key, Menu, Settings, LineChart, Lock, Database, Activity } from 'lucide-react'
+import { LayoutDashboard, Shield, Users, Key, Menu, Settings, LineChart, Lock, Database, Activity, ServerCog } from 'lucide-react'
 import { cn } from "@/lib/utils"
 import { useSidebar } from "../components/ui/sidebar-context"
 import { Button } from "@/components/ui/button"
@@ -22,11 +22,11 @@ const navigation = [
   {
     name: "System",
     items: [
-      { name: "Performance", href: "/performance", icon: Activity },
       { name: "Security", href: "/security", icon: Lock },
       { name: "Rman", href: "/rman", icon: Database },
+      { name: "Performance", href: "/performance", icon: Activity },
       { name: "Monitoring", href: "/monitoring", icon: LineChart },
-      { name: "Settings", href: "/settings", icon: Settings },
+      { name: "High Availability", href: "/ha-settings", icon: ServerCog },
     ]
   }
 ]

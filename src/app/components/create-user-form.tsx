@@ -22,9 +22,10 @@ import {
   SelectValue,
 } from "@/components/ui/select"
 import { Switch } from "@/components/ui/switch"
-import { useToast } from "@/hooks/use-toast"
+import { toast } from "sonner"
 import { Loader2 } from 'lucide-react'
 import { useState } from "react"
+import { endpoints } from "@/app/api/config"
 
 const userFormSchema = z.object({
   username: z.string().min(1, "Username is required").max(30),
@@ -39,12 +40,10 @@ const userFormSchema = z.object({
   temporaryTablespace: z.string().min(1, "Temporary tablespace is required"),
   quotaLimit: z.string().optional(),
   accountLocked: z.boolean().default(false),
-  passwordExpired: z.boolean().default(false),
-  profile: z.string().optional(),
+  passwordExpiryDate: z.string().optional(),
 })
 
 export function CreateUserForm({ onSuccess }: { onSuccess: () => void }) {
-  const { toast } = useToast()
   const [isLoading, setIsLoading] = useState(false)
 
   const form = useForm<z.infer<typeof userFormSchema>>({
@@ -53,14 +52,13 @@ export function CreateUserForm({ onSuccess }: { onSuccess: () => void }) {
       defaultTablespace: "USERS",
       temporaryTablespace: "TEMP",
       accountLocked: false,
-      passwordExpired: false,
     },
   })
 
   async function onSubmit(values: z.infer<typeof userFormSchema>) {
     setIsLoading(true)
     try {
-      const response = await fetch("http://localhost:8080/api/users", {
+      const response = await fetch(endpoints.users, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -72,17 +70,10 @@ export function CreateUserForm({ onSuccess }: { onSuccess: () => void }) {
         throw new Error("Failed to create user")
       }
 
-      toast({
-        title: "Success",
-        description: `User ${values.username} has been created successfully.`,
-      })
+      toast.success(`User ${values.username} has been created successfully.`)
       onSuccess()
     } catch (error) {
-      toast({
-        variant: "destructive",
-        title: "Error",
-        description: "Failed to create user. Please try again.",
-      })
+      toast.error("Failed to create user. Please try again.")
     } finally {
       setIsLoading(false)
     }
@@ -213,21 +204,17 @@ export function CreateUserForm({ onSuccess }: { onSuccess: () => void }) {
 
           <FormField
             control={form.control}
-            name="passwordExpired"
+            name="passwordExpiryDate"
             render={({ field }) => (
-              <FormItem className="flex flex-row items-center justify-between rounded-lg border p-4">
-                <div className="space-y-0.5">
-                  <FormLabel className="text-base">Password Expired</FormLabel>
-                  <FormDescription>
-                    Force password change on first login
-                  </FormDescription>
-                </div>
+              <FormItem>
+                <FormLabel>Password Expiry Date</FormLabel>
                 <FormControl>
-                  <Switch
-                    checked={field.value}
-                    onCheckedChange={field.onChange}
-                  />
+                  <Input type="date" {...field} />
                 </FormControl>
+                <FormDescription>
+                  Set the date when the password will expire
+                </FormDescription>
+                <FormMessage />
               </FormItem>
             )}
           />
