@@ -37,3 +37,13 @@
     type: 'SYSTEM' | 'OBJECT';
     description?: string;
   }
+
+  export interface BackupHistory {
+    id: number
+    type: string
+    status: string
+    timestamp: string
+    details: string
+  }
+  
+  

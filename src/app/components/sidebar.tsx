@@ -24,7 +24,7 @@ const navigation = [
     items: [
       { name: "Performance", href: "/performance", icon: Activity },
       { name: "Security", href: "/security", icon: Lock },
-      { name: "Database", href: "/database", icon: Database },
+      { name: "Rman", href: "/rman", icon: Database },
       { name: "Monitoring", href: "/monitoring", icon: LineChart },
       { name: "Settings", href: "/settings", icon: Settings },
     ]
