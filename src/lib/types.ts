@@ -45,5 +45,32 @@
     timestamp: string
     details: string
   }
+
+  export interface PerformanceMetrics {
+    cpuUsagePercent: number
+    memoryUsageMB: number
+    pgaUsageMB: number
+    bufferCacheHitRatio: number
+    ioOperationsPerSecond: number
+    timestamp: string
+  }
+  
+  export interface AWRReport {
+    SNAP_ID: number
+    BEGIN_INTERVAL_TIME: string
+    END_INTERVAL_TIME: string
+    CPU_USAGE_PERCENT: number
+    MEMORY_USAGE_MB: number
+    IO_REQUESTS_PER_SEC: number
+  }
+  
+  export interface ASHReport {
+    SESSION_ID: number
+    SQL_ID: string
+    EVENT: string
+    WAIT_CLASS: string
+    SESSION_STATE: string
+    TIME_WAITED: number
+  }
   
   
