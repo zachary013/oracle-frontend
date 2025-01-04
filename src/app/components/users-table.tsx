@@ -1,6 +1,6 @@
 "use client"
 
-import React, { Dispatch, SetStateAction } from 'react'
+import React, { Dispatch, SetStateAction, useState } from 'react'
 import {
   Table,
   TableBody,
@@ -31,6 +31,15 @@ import {
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog"
 import { endpoints } from "@/app/api/config"
+import {
+  Pagination,
+  PaginationContent,
+  PaginationEllipsis,
+  PaginationItem,
+  PaginationLink,
+  PaginationNext,
+  PaginationPrevious,
+} from "@/components/ui/pagination"
 
 interface UsersTableProps {
   users: User[]
@@ -43,6 +52,8 @@ interface UsersTableProps {
   onManageRoles: (user: User) => void
 }
 
+const ITEMS_PER_PAGE = 10
+
 const UsersTable: React.FC<UsersTableProps> = ({
   users,
   error,
@@ -53,7 +64,14 @@ const UsersTable: React.FC<UsersTableProps> = ({
   onEditUser,
   onManageRoles,
 }) => {
-  const [userToDelete, setUserToDelete] = React.useState<string | null>(null)
+  const [userToDelete, setUserToDelete] = useState<string | null>(null)
+  const [currentPage, setCurrentPage] = useState(1)
+
+  const totalPages = Math.ceil(users.length / ITEMS_PER_PAGE)
+  const paginatedUsers = users.slice(
+    (currentPage - 1) * ITEMS_PER_PAGE,
+    currentPage * ITEMS_PER_PAGE
+  )
 
   const fetchUsers = async () => {
     try {
@@ -154,7 +172,7 @@ const UsersTable: React.FC<UsersTableProps> = ({
             </TableRow>
           </TableHeader>
           <TableBody>
-            {users.map((user) => (
+            {paginatedUsers.map((user) => (
               <TableRow key={user.username}>
                 <TableCell className="font-medium">{user.username}</TableCell>
                 <TableCell>
@@ -165,7 +183,7 @@ const UsersTable: React.FC<UsersTableProps> = ({
                         : "bg-red-100 text-red-700 dark:bg-red-500/20 dark:text-red-400"
                     }`}
                   >
-                    {user.accountLocked ? 'Locked' : 'Unlocked'}
+                    {user.accountLocked ? 'Locked' : 'Active'}
                   </span>
                 </TableCell>
                 <TableCell>{user.roles.map(role => role.name).join(", ") || 'No roles'}</TableCell>
@@ -224,6 +242,43 @@ const UsersTable: React.FC<UsersTableProps> = ({
           </TableBody>
         </Table>
       </div>
+
+      <Pagination className="mt-4">
+        <PaginationContent>
+          <PaginationItem>
+            <PaginationPrevious 
+              href="#" 
+              onClick={(e) => {
+                e.preventDefault();
+                if (currentPage > 1) setCurrentPage(currentPage - 1);
+              }}
+            />
+          </PaginationItem>
+          {[...Array(totalPages)].map((_, index) => (
+            <PaginationItem key={index}>
+              <PaginationLink 
+                href="#" 
+                onClick={(e) => {
+                  e.preventDefault();
+                  setCurrentPage(index + 1);
+                }}
+                isActive={currentPage === index + 1}
+              >
+                {index + 1}
+              </PaginationLink>
+            </PaginationItem>
+          ))}
+          <PaginationItem>
+            <PaginationNext 
+              href="#" 
+              onClick={(e) => {
+                e.preventDefault();
+                if (currentPage < totalPages) setCurrentPage(currentPage + 1);
+              }}
+            />
+          </PaginationItem>
+        </PaginationContent>
+      </Pagination>
 
       <AlertDialog open={!!userToDelete} onOpenChange={() => setUserToDelete(null)}>
         <AlertDialogContent>

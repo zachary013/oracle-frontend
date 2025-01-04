@@ -14,25 +14,24 @@ export interface User {
 export interface Role {
   id: number;
   name: string;
-  description: string | null;
+  description: string;
   privileges: Privilege[];
 }
 
-  
 export interface Privilege {
+  id: number;
   name: string;
-  type: 'SYSTEM' | 'OBJECT';
-  description?: string;
-  grantee?: string;
-  objectName?: string;
+  description: string;
 }
 
 export interface PaginatedResponse<T> {
-  data: T[];
-  total: number;
-  page: number;
-  pageSize: number;
+  content: T[];
+  totalPages: number;
+  totalElements: number;
+  size: number;
+  number: number;
 }
+
 
 export interface PaginationParams {
   page: number;
