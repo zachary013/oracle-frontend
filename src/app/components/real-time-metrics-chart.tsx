@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
 import {
   LineChart,
   Line,
@@ -31,13 +32,11 @@ export function RealTimeMetricsChart({
     });
   }, [latestMetrics]);
 
-  // Calculate dynamic scaling with a margin
   const maxMemory = Math.max(...data.map((d) => d.memoryUsageMB), 1000);
   const maxIO = Math.max(...data.map((d) => d.ioOperationsPerSecond), 1e10);
 
-  // Add a margin of 10% to the maximum values
-  const memoryMaxWithMargin = Math.ceil(maxMemory * 1.1 / 100) * 100; // Rounded to the nearest 100
-  const ioMaxWithMargin = Math.ceil(maxIO * 1.1 / 1e10) * 1e10; // Rounded to the nearest 10^10
+  const memoryMaxWithMargin = Math.ceil(maxMemory * 1.1 / 100) * 100;
+  const ioMaxWithMargin = Math.ceil(maxIO * 1.1 / 1e10) * 1e10;
 
   const handleMetricChange = (metric: string) => {
     setSelectedMetric(metric);
@@ -49,16 +48,25 @@ export function RealTimeMetricsChart({
         <CardTitle>Real-time Metrics Chart</CardTitle>
       </CardHeader>
       <CardContent>
-        <div style={{ marginBottom: "10px" }}>
-          <button onClick={() => handleMetricChange("cpuUsagePercent")}>
-            Show CPU Usage
-          </button>
-          <button onClick={() => handleMetricChange("memoryUsageMB")}>
-            Show Memory Usage
-          </button>
-          <button onClick={() => handleMetricChange("ioOperationsPerSecond")}>
-            Show IO Operations
-          </button>
+        <div className="flex gap-4 mb-6">
+          <Button
+            variant={selectedMetric === "cpuUsagePercent" ? "default" : "outline"}
+            onClick={() => handleMetricChange("cpuUsagePercent")}
+          >
+            CPU Usage
+          </Button>
+          <Button
+            variant={selectedMetric === "memoryUsageMB" ? "default" : "outline"}
+            onClick={() => handleMetricChange("memoryUsageMB")}
+          >
+            Memory Usage
+          </Button>
+          <Button
+            variant={selectedMetric === "ioOperationsPerSecond" ? "default" : "outline"}
+            onClick={() => handleMetricChange("ioOperationsPerSecond")}
+          >
+            IO Operations
+          </Button>
         </div>
         <div style={{ height: "300px" }}>
           <LineChart width={600} height={300} data={data}>
@@ -70,10 +78,10 @@ export function RealTimeMetricsChart({
             <YAxis
               domain={
                 selectedMetric === "cpuUsagePercent"
-                  ? [0, 100] // Fixed scaling for CPU usage
+                  ? [0, 100]
                   : selectedMetric === "memoryUsageMB"
-                  ? [0, memoryMaxWithMargin] // Memory scaling with margin
-                  : [0, ioMaxWithMargin] // IO scaling with margin
+                  ? [0, memoryMaxWithMargin]
+                  : [0, ioMaxWithMargin]
               }
               label={{
                 value:
