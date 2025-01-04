@@ -1,24 +1,14 @@
 "use client"
 
 import { useState, useEffect } from "react"
-import { Button } from "@/components/ui/button"
-import { Plus } from 'lucide-react'
 import PrivilegesTable from "../components/privileges-table"
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-} from "@/components/ui/dialog"
-import { CreatePrivilegeForm } from "../components/create-privilege-form"
-import { Privilege } from "@/lib/types"
-import { endpoints } from "@/app/api/config"
+import { endpoints } from "../api/config"
 
 export default function PrivilegesPage() {
-  const [isCreateDialogOpen, setIsCreateDialogOpen] = useState(false)
-  const [privileges, setPrivileges] = useState<Privilege[]>([])
+  const [privileges, setPrivileges] = useState<string[]>([])
   const [error, setError] = useState<string>("")
   const [loading, setLoading] = useState(true)
+  const [selectedPrivilege, setSelectedPrivilege] = useState<string | null>(null)
 
   const fetchPrivileges = async () => {
     try {
@@ -37,6 +27,20 @@ export default function PrivilegesPage() {
     }
   }
 
+  const fetchPrivilegeDetails = async (name: string) => {
+    try {
+      const response = await fetch(`${endpoints.privileges}/${name}`)
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`)
+      }
+      const data = await response.json()
+      // Handle the privilege details as needed
+      console.log(data)
+    } catch (e) {
+      console.error("Failed to fetch privilege details:", e)
+    }
+  }
+
   useEffect(() => {
     fetchPrivileges()
   }, [])
@@ -47,27 +51,8 @@ export default function PrivilegesPage() {
         <div>
           <h1 className="text-3xl font-bold tracking-tight">Oracle Privileges</h1>
           <p className="text-muted-foreground">
-            Manage system and object privileges
+            View available Oracle database privileges
           </p>
-        </div>
-        <div className="flex items-center space-x-4">
-          <Dialog open={isCreateDialogOpen} onOpenChange={setIsCreateDialogOpen}>
-            <Button onClick={() => setIsCreateDialogOpen(true)} size="default">
-              <Plus className="mr-2 h-4 w-4" />
-              Create Privilege
-            </Button>
-            <DialogContent className="sm:max-w-[600px]">
-              <DialogHeader>
-                <DialogTitle>Create New Privilege</DialogTitle>
-              </DialogHeader>
-              <CreatePrivilegeForm
-                onSuccess={() => {
-                  setIsCreateDialogOpen(false)
-                  fetchPrivileges()
-                }}
-              />
-            </DialogContent>
-          </Dialog>
         </div>
       </div>
 
@@ -75,11 +60,8 @@ export default function PrivilegesPage() {
         privileges={privileges}
         error={error}
         loading={loading}
-        setPrivileges={setPrivileges}
-        setError={setError}
-        setLoading={setLoading}
+        onPrivilegeSelect={fetchPrivilegeDetails}
       />
     </div>
   )
 }
-

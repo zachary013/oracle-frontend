@@ -1,5 +1,6 @@
 "use client"
 
+import React, { Dispatch, SetStateAction, useState } from 'react'
 import {
   Table,
   TableBody,
@@ -18,8 +19,7 @@ import {
 import { Key, MoreHorizontal, Trash, AlertCircle } from 'lucide-react'
 import { Skeleton } from "@/components/ui/skeleton"
 import { toast } from "sonner"
-import React, { Dispatch, SetStateAction } from 'react'
-import { Role } from "@/lib/types"
+import { Role, Privilege } from "@/lib/types"
 import {
   AlertDialog,
   AlertDialogAction,
@@ -36,7 +36,17 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog"
-import { ManagePrivilegesForm } from "./manage-privileges-props"
+import { ManagePrivilegesForm } from "./manage-privileges-form"
+import { endpoints } from "@/app/api/config"
+import {
+  Pagination,
+  PaginationContent,
+  PaginationEllipsis,
+  PaginationItem,
+  PaginationLink,
+  PaginationNext,
+  PaginationPrevious,
+} from "@/components/ui/pagination"
 
 interface RolesTableProps {
   roles: Role[]
@@ -47,6 +57,8 @@ interface RolesTableProps {
   setLoading: Dispatch<SetStateAction<boolean>>
 }
 
+const ITEMS_PER_PAGE = 10
+
 const RolesTable: React.FC<RolesTableProps> = ({
   roles,
   error,
@@ -55,12 +67,19 @@ const RolesTable: React.FC<RolesTableProps> = ({
   setError,
   setLoading,
 }) => {
-  const [roleToDelete, setRoleToDelete] = React.useState<string | null>(null)
-  const [roleToManage, setRoleToManage] = React.useState<Role | null>(null)
+  const [roleToDelete, setRoleToDelete] = useState<string | null>(null)
+  const [roleToManage, setRoleToManage] = useState<Role | null>(null)
+  const [currentPage, setCurrentPage] = useState(1)
+
+  const totalPages = Math.ceil(roles.length / ITEMS_PER_PAGE)
+  const paginatedRoles = roles.slice(
+    (currentPage - 1) * ITEMS_PER_PAGE,
+    currentPage * ITEMS_PER_PAGE
+  )
 
   const fetchRoles = async () => {
     try {
-      const response = await fetch('http://localhost:8080/api/roles')
+      const response = await fetch(endpoints.roles)
       if (!response.ok) throw new Error('Failed to fetch roles')
       const data = await response.json()
       setRoles(data)
@@ -74,7 +93,7 @@ const RolesTable: React.FC<RolesTableProps> = ({
 
   const handleDeleteRole = async (name: string) => {
     try {
-      const response = await fetch(`http://localhost:8080/api/roles/${name}`, {
+      const response = await fetch(`${endpoints.roles}/${name}`, {
         method: 'DELETE',
       })
       if (!response.ok) throw new Error('Failed to delete role')
@@ -120,11 +139,15 @@ const RolesTable: React.FC<RolesTableProps> = ({
             </TableRow>
           </TableHeader>
           <TableBody>
-            {roles.map((role) => (
+            {paginatedRoles.map((role) => (
               <TableRow key={role.name}>
                 <TableCell className="font-medium">{role.name}</TableCell>
                 <TableCell>{role.description || 'No description'}</TableCell>
-                <TableCell>{role.privileges?.join(", ") || 'No privileges'}</TableCell>
+                <TableCell>
+                  {role.privileges.length > 0
+                    ? role.privileges.map((priv) => priv.name).join(", ")
+                    : 'No privileges'}
+                </TableCell>
                 <TableCell>
                   <DropdownMenu>
                     <DropdownMenuTrigger asChild>
@@ -152,6 +175,43 @@ const RolesTable: React.FC<RolesTableProps> = ({
           </TableBody>
         </Table>
       </div>
+
+      <Pagination className="mt-4">
+        <PaginationContent>
+          <PaginationItem>
+            <PaginationPrevious 
+              href="#" 
+              onClick={(e) => {
+                e.preventDefault();
+                if (currentPage > 1) setCurrentPage(currentPage - 1);
+              }}
+            />
+          </PaginationItem>
+          {[...Array(totalPages)].map((_, index) => (
+            <PaginationItem key={index}>
+              <PaginationLink 
+                href="#" 
+                onClick={(e) => {
+                  e.preventDefault();
+                  setCurrentPage(index + 1);
+                }}
+                isActive={currentPage === index + 1}
+              >
+                {index + 1}
+              </PaginationLink>
+            </PaginationItem>
+          ))}
+          <PaginationItem>
+            <PaginationNext 
+              href="#" 
+              onClick={(e) => {
+                e.preventDefault();
+                if (currentPage < totalPages) setCurrentPage(currentPage + 1);
+              }}
+            />
+          </PaginationItem>
+        </PaginationContent>
+      </Pagination>
 
       <AlertDialog open={!!roleToDelete} onOpenChange={() => setRoleToDelete(null)}>
         <AlertDialogContent>

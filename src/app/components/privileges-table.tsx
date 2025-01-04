@@ -1,5 +1,6 @@
 "use client"
 
+import { useState } from "react"
 import {
   Table,
   TableBody,
@@ -9,171 +10,158 @@ import {
   TableRow,
 } from "@/components/ui/table"
 import { Button } from "@/components/ui/button"
+import { Loader2, Info, ChevronLeft, ChevronRight } from 'lucide-react'
 import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu"
-import { MoreHorizontal, Trash, AlertCircle } from 'lucide-react'
-import { Skeleton } from "@/components/ui/skeleton"
-import { toast } from "sonner"
-import React, { Dispatch, SetStateAction } from 'react'
-import { Privilege } from "@/lib/types"
-import {
-  AlertDialog,
-  AlertDialogAction,
-  AlertDialogCancel,
-  AlertDialogContent,
-  AlertDialogDescription,
-  AlertDialogFooter,
-  AlertDialogHeader,
-  AlertDialogTitle,
-} from "@/components/ui/alert-dialog"
+  Pagination,
+  PaginationContent,
+  PaginationItem,
+} from "@/components/ui/pagination"
+import { Input } from "@/components/ui/input"
 
 interface PrivilegesTableProps {
-  privileges: Privilege[]
+  privileges: string[]
   error: string
   loading: boolean
-  setPrivileges: Dispatch<SetStateAction<Privilege[]>>
-  setError: Dispatch<SetStateAction<string>>
-  setLoading: Dispatch<SetStateAction<boolean>>
+  onPrivilegeSelect: (name: string) => void
 }
 
-const PrivilegesTable: React.FC<PrivilegesTableProps> = ({
+const ITEMS_PER_PAGE = 10
+const MAX_VISIBLE_PAGES = 7
+
+const getVisiblePages = (current: number, total: number) => {
+  if (total <= MAX_VISIBLE_PAGES) return Array.from({ length: total }, (_, i) => i + 1)
+
+  let start = Math.max(1, current - Math.floor(MAX_VISIBLE_PAGES / 2))
+  let end = start + MAX_VISIBLE_PAGES - 1
+
+  if (end > total) {
+    end = total
+    start = Math.max(1, end - MAX_VISIBLE_PAGES + 1)
+  }
+
+  return Array.from({ length: end - start + 1 }, (_, i) => start + i)
+}
+
+export default function PrivilegesTable({
   privileges,
   error,
   loading,
-  setPrivileges,
-  setError,
-  setLoading,
-}) => {
-  const [privilegeToDelete, setPrivilegeToDelete] = React.useState<string | null>(null)
-
-  const fetchPrivileges = async () => {
-    try {
-      const response = await fetch('http://localhost:8080/api/privileges')
-      if (!response.ok) throw new Error('Failed to fetch privileges')
-      const data = await response.json()
-      setPrivileges(data)
-    } catch (err) {
-      setError('Failed to load privileges. Please try again later.')
-      toast.error('Failed to load privileges')
-    } finally {
-      setLoading(false)
-    }
-  }
-
-  const handleDeletePrivilege = async (name: string) => {
-    try {
-      const response = await fetch(`http://localhost:8080/api/privileges/${name}`, {
-        method: 'DELETE',
-      })
-      if (!response.ok) throw new Error('Failed to delete privilege')
-      fetchPrivileges()
-      toast.success('Privilege deleted successfully')
-    } catch (err) {
-      toast.error('Failed to delete privilege')
-    } finally {
-      setPrivilegeToDelete(null)
-    }
-  }
+  onPrivilegeSelect,
+}: PrivilegesTableProps) {
+  const [currentPage, setCurrentPage] = useState(1)
+  const [searchTerm, setSearchTerm] = useState("")
 
   if (loading) {
     return (
-      <div className="space-y-3">
-        <Skeleton className="h-4 w-[250px]" />
-        <Skeleton className="h-[400px] w-full" />
+      <div className="flex items-center justify-center h-64">
+        <Loader2 className="h-8 w-8 animate-spin" />
       </div>
     )
   }
 
   if (error) {
     return (
-      <div className="rounded-lg border border-destructive/50 p-4">
-        <div className="flex items-center gap-2 text-destructive">
-          <AlertCircle className="h-4 w-4" />
-          <p>{error}</p>
-        </div>
+      <div className="flex items-center justify-center h-64">
+        <p className="text-destructive">{error}</p>
       </div>
     )
   }
 
+  const filteredPrivileges = privileges.filter(privilege =>
+    privilege.toLowerCase().includes(searchTerm.toLowerCase())
+  )
+
+  const totalPages = Math.ceil(filteredPrivileges.length / ITEMS_PER_PAGE)
+  const paginatedPrivileges = filteredPrivileges.slice(
+    (currentPage - 1) * ITEMS_PER_PAGE,
+    currentPage * ITEMS_PER_PAGE
+  )
+
   return (
-    <>
+    <div className="space-y-4">
+      <Input
+        placeholder="Search privileges..."
+        value={searchTerm}
+        onChange={(e) => {
+          setSearchTerm(e.target.value)
+          setCurrentPage(1)
+        }}
+        className="max-w-sm"
+      />
       <div className="rounded-md border">
         <Table>
           <TableHeader>
             <TableRow>
-              <TableHead>Name</TableHead>
+              <TableHead>Privilege Name</TableHead>
               <TableHead>Type</TableHead>
-              <TableHead>Description</TableHead>
-              <TableHead className="w-[100px]">Actions</TableHead>
+              <TableHead className="text-right">Actions</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
-            {privileges.map((privilege) => (
-              <TableRow key={privilege.name}>
-                <TableCell className="font-medium">{privilege.name}</TableCell>
+            {paginatedPrivileges.map((privilege) => (
+              <TableRow key={privilege}>
+                <TableCell className="font-medium">{privilege}</TableCell>
                 <TableCell>
-                  <span
-                    className={`inline-flex items-center rounded-full px-2 py-1 text-xs font-medium ${
-                      privilege.type === "SYSTEM"
-                        ? "bg-blue-100 text-blue-700 dark:bg-blue-500/20 dark:text-blue-400"
-                        : "bg-purple-100 text-purple-700 dark:bg-purple-500/20 dark:text-purple-400"
-                    }`}
-                  >
-                    {privilege.type}
-                  </span>
+                  {privilege.includes("OBJECT_") ? "OBJECT" : "SYSTEM"}
                 </TableCell>
-                <TableCell>{privilege.description || 'No description'}</TableCell>
-                <TableCell>
-                  <DropdownMenu>
-                    <DropdownMenuTrigger asChild>
-                      <Button variant="ghost" size="icon">
-                        <MoreHorizontal className="h-4 w-4" />
-                      </Button>
-                    </DropdownMenuTrigger>
-                    <DropdownMenuContent align="end">
-                      <DropdownMenuItem
-                        className="text-red-600 dark:text-red-400"
-                        onClick={() => setPrivilegeToDelete(privilege.name)}
-                      >
-                        <Trash className="mr-2 h-4 w-4" />
-                        Delete Privilege
-                      </DropdownMenuItem>
-                    </DropdownMenuContent>
-                  </DropdownMenu>
+                <TableCell className="text-right">
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={() => onPrivilegeSelect(privilege)}
+                  >
+                    <Info className="h-4 w-4 mr-2" />
+                    Details
+                  </Button>
                 </TableCell>
               </TableRow>
             ))}
           </TableBody>
         </Table>
       </div>
-
-      <AlertDialog open={!!privilegeToDelete} onOpenChange={() => setPrivilegeToDelete(null)}>
-        <AlertDialogContent>
-          <AlertDialogHeader>
-            <AlertDialogTitle>Are you sure?</AlertDialogTitle>
-            <AlertDialogDescription>
-              This action cannot be undone. This will permanently delete the privilege
-              and remove it from all associated roles.
-            </AlertDialogDescription>
-          </AlertDialogHeader>
-          <AlertDialogFooter>
-            <AlertDialogCancel>Cancel</AlertDialogCancel>
-            <AlertDialogAction
-              className="bg-red-600 hover:bg-red-700"
-              onClick={() => privilegeToDelete && handleDeletePrivilege(privilegeToDelete)}
-            >
-              Delete
-            </AlertDialogAction>
-          </AlertDialogFooter>
-        </AlertDialogContent>
-      </AlertDialog>
-    </>
+      {totalPages > 1 && (
+        <div className="flex justify-center overflow-x-auto px-2">
+          <div className="inline-flex items-center justify-start gap-1">
+            <Pagination>
+              <PaginationContent className="flex-nowrap gap-1">
+                <PaginationItem>
+                  <Button
+                    variant="outline"
+                    size="icon"
+                    onClick={() => setCurrentPage(prev => Math.max(prev - 1, 1))}
+                    disabled={currentPage === 1 || loading}
+                  >
+                    <ChevronLeft className="h-4 w-4" />
+                  </Button>
+                </PaginationItem>
+                {getVisiblePages(currentPage, totalPages).map((page) => (
+                  <PaginationItem key={page}>
+                    <Button
+                      variant={currentPage === page ? "default" : "outline"}
+                      size="icon"
+                      onClick={() => setCurrentPage(page)}
+                      disabled={loading}
+                    >
+                      {page}
+                    </Button>
+                  </PaginationItem>
+                ))}
+                <PaginationItem>
+                  <Button
+                    variant="outline"
+                    size="icon"
+                    onClick={() => setCurrentPage(prev => Math.min(prev + 1, totalPages))}
+                    disabled={currentPage === totalPages || loading}
+                  >
+                    <ChevronRight className="h-4 w-4" />
+                  </Button>
+                </PaginationItem>
+              </PaginationContent>
+            </Pagination>
+          </div>
+        </div>
+      )}
+    </div>
   )
 }
-
-export default PrivilegesTable
 
