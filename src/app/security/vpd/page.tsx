@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Textarea } from "@/components/ui/textarea"
+import { Checkbox } from "@/components/ui/checkbox"
 import {
   Table,
   TableBody,
@@ -24,7 +25,8 @@ export default function VPDPage() {
     tableName: '',
     functionName: '',
     policyFunction: '',
-    statementTypes: 'SELECT,INSERT,UPDATE,DELETE'
+    statementTypes: 'SELECT,INSERT,UPDATE,DELETE',
+    active: true
   })
 
   useEffect(() => {
@@ -47,7 +49,8 @@ export default function VPDPage() {
         tableName: '',
         functionName: '',
         policyFunction: '',
-        statementTypes: 'SELECT,INSERT,UPDATE,DELETE'
+        statementTypes: 'SELECT,INSERT,UPDATE,DELETE',
+        active: true
       })
     } finally {
       setLoading(false)
@@ -113,6 +116,14 @@ export default function VPDPage() {
             onChange={(e) => setFormData(prev => ({ ...prev, statementTypes: e.target.value }))}
             required
           />
+        </div>
+        <div className="flex items-center space-x-2">
+          <Checkbox
+            id="active"
+            checked={formData.active}
+            onCheckedChange={(checked) => setFormData(prev => ({ ...prev, active: checked as boolean }))}
+          />
+          <Label htmlFor="active">Active</Label>
         </div>
         <Button type="submit" disabled={loading}>
           Create Policy
