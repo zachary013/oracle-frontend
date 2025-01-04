@@ -13,6 +13,9 @@ export const endpoints = {
   rmanFullBackup: `${API_BASE_URL}/rman/backup/full`,
   rmanIncrementalBackup: `${API_BASE_URL}/rman/incremental-backup`,
   rmanRestore: `${API_BASE_URL}/rman/restore`,
+  realTimeMetrics: `${API_BASE_URL}/performance/metrics`,
+  ashReport: `${API_BASE_URL}/performance/ash`,
+  awrReport: `${API_BASE_URL}/performance/awr`,
 
   // Performance Metrics and Reports
   realTimeMetrics: `${API_BASE_URL}/performance/metrics`,
