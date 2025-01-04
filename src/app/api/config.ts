@@ -1,13 +1,21 @@
+// api/config.js
+
 export const API_BASE_URL = 'http://localhost:8080/api';
 
 export const endpoints = {
+  // User Management
   users: `${API_BASE_URL}/users`,
   roles: `${API_BASE_URL}/roles`,
   privileges: `${API_BASE_URL}/privileges`,
-  rmanBackups:`${API_BASE_URL}/rman/backups`,
+
+  // RMAN (Recovery Manager) Operations
+  rmanBackups: `${API_BASE_URL}/rman/backups`,
   rmanFullBackup: `${API_BASE_URL}/rman/backup/full`,
   rmanIncrementalBackup: `${API_BASE_URL}/rman/incremental-backup`,
   rmanRestore: `${API_BASE_URL}/rman/restore`,
-  
-};
 
+  // Performance Metrics and Reports
+  realTimeMetrics: `${API_BASE_URL}/performance/metrics`,
+  ashReport: `${API_BASE_URL}/performance/ash`,
+  awrReport: `${API_BASE_URL}/performance/awr`,
+};
