@@ -25,7 +25,7 @@ const navigation = [
       { name: "Security", href: "/security", icon: Lock },
       { name: "Rman", href: "/rman", icon: Database },
       { name: "Performance", href: "/performance", icon: Activity },
-      { name: "Monitoring", href: "/monitoring", icon: LineChart },
+      { name: "Optimisations", href: "/optimisation", icon: LineChart },
       { name: "High Availability", href: "/ha-settings", icon: ServerCog },
     ]
   }

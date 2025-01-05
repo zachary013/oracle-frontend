@@ -18,4 +18,10 @@ export const endpoints = {
   realTimeMetrics: `${API_BASE_URL}/performance/metrics`,
   ashReport: `${API_BASE_URL}/performance/ash`,
   awrReport: `${API_BASE_URL}/performance/awr`,
+
+  // Optimisation des performances 
+  slowQueries: `${API_BASE_URL}/optimization/slowQueries`,
+  tuningRecommendations: `${API_BASE_URL}/optimization/optimize-query`,
+  gatherTableStats: `${API_BASE_URL}/optimization/gather-stats`,
+  scheduleStatsGathering: `${API_BASE_URL}/optimization/schedule-stats`,
 };

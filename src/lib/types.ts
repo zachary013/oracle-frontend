@@ -131,3 +131,33 @@ export interface PaginationParams {
     createdBy: string
   }
   
+  // export interface SlowQuery {
+  //   SQL_ID: string
+  //   SQL_TEXT: string
+  //   ELAPSED_TIME_SECS: number
+  //   EXECUTIONS: number
+  //   AVG_ELAPSED_SECS: number
+  //   BUFFER_GETS: number
+  //   DISK_READS: number
+  //   ROWS_PROCESSED: number
+  // }
+
+  export interface SlowQuery {
+    id: number
+    sqlId: string
+    sqlText: string
+    elapsedTime: number
+    cpuTime: number
+    executions: number
+    captureTime: string
+    status: string
+    optimizationRecommendations: string | null
+  
+    // Derived fields for display
+    elapsedTimeSecs?: number
+    avgElapsedSecs?: number
+  }
+  
+  export interface TuningRecommendation {
+    recommendations: string
+  }
