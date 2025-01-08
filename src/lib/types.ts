@@ -1,3 +1,4 @@
+//src/app/api/security.ts
 export interface User {
   id: number;
   username: string;
@@ -100,14 +101,15 @@ export interface PaginationParams {
   }
   
   export interface TDEConfig {
-    id: number
-    tableName: string
-    columnName: string
-    encryptionAlgorithm: string
-    createdAt: string
-    createdBy: string
-    active: boolean
+    id: number;
+    tableName: string;
+    columnName: string;
+    encryptionAlgorithm: string;
+    createdAt: string;
+    createdBy: string;
+    active: boolean;
   }
+  
   
   export interface VPDPolicy {
     id: number

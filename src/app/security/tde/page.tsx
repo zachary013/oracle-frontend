@@ -25,28 +25,46 @@ import type { TDEConfig } from "@/lib/types"
 export default function TDEPage() {
   const [configs, setConfigs] = useState<TDEConfig[]>([])
   const [loading, setLoading] = useState(false)
-  const [tableName, setTableName] = useState('')
-  const [columnName, setColumnName] = useState('')
-  const [algorithm, setAlgorithm] = useState('AES256')
+  const [error, setError] = useState<string | null>(null)
+  const [formData, setFormData] = useState({
+    tableName: '',
+    columnName: '',
+    algorithm: 'AES256'
+  })
 
   useEffect(() => {
     loadConfigurations()
   }, [])
 
   async function loadConfigurations() {
-    const data = await securityApi.getTDEConfigurations()
-    setConfigs(data)
+    setLoading(true)
+    try {
+      const data = await securityApi.getTDEConfigurations()
+      setConfigs(data)
+    } catch (error) {
+      console.error("Failed to load TDE configurations:", error)
+      setError("Failed to load TDE configurations. Please try again.")
+    } finally {
+      setLoading(false)
+    }
   }
 
   async function handleEnableTDE(e: React.FormEvent) {
     e.preventDefault()
     setLoading(true)
+    setError(null)
     try {
-      await securityApi.enableTDE(tableName, columnName, algorithm)
+      const result = await securityApi.enableTDE(formData.tableName, formData.columnName, formData.algorithm)
+      console.log('TDE enabled successfully:', result)
       await loadConfigurations()
-      setTableName('')
-      setColumnName('')
-      setAlgorithm('AES256')
+      setFormData({
+        tableName: '',
+        columnName: '',
+        algorithm: 'AES256'
+      })
+    } catch (error) {
+      console.error("Failed to enable TDE:", error)
+      setError(error instanceof Error ? error.message : "Failed to enable TDE. Please check the console for details.")
     } finally {
       setLoading(false)
     }
@@ -54,9 +72,13 @@ export default function TDEPage() {
 
   async function handleDisableTDE(tableName: string, columnName: string) {
     setLoading(true)
+    setError(null)
     try {
       await securityApi.disableTDE(tableName, columnName)
       await loadConfigurations()
+    } catch (error) {
+      console.error("Failed to disable TDE:", error)
+      setError("Failed to disable TDE. Please try again.")
     } finally {
       setLoading(false)
     }
@@ -64,13 +86,19 @@ export default function TDEPage() {
 
   return (
     <div className="p-6">
+      <h1 className="text-2xl font-bold mb-6">TDE Management</h1>
+      {error && (
+        <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative mb-4" role="alert">
+          <span className="block sm:inline">{error}</span>
+        </div>
+      )}
       <form onSubmit={handleEnableTDE} className="grid gap-4 mb-6">
         <div className="grid gap-2">
           <Label htmlFor="tableName">Table Name</Label>
           <Input
             id="tableName"
-            value={tableName}
-            onChange={(e) => setTableName(e.target.value)}
+            value={formData.tableName}
+            onChange={(e) => setFormData(prev => ({ ...prev, tableName: e.target.value }))}
             required
           />
         </div>
@@ -78,15 +106,15 @@ export default function TDEPage() {
           <Label htmlFor="columnName">Column Name</Label>
           <Input
             id="columnName"
-            value={columnName}
-            onChange={(e) => setColumnName(e.target.value)}
+            value={formData.columnName}
+            onChange={(e) => setFormData(prev => ({ ...prev, columnName: e.target.value }))}
             required
           />
         </div>
         <div className="grid gap-2">
           <Label htmlFor="algorithm">Encryption Algorithm</Label>
-          <Select value={algorithm} onValueChange={setAlgorithm}>
-            <SelectTrigger>
+          <Select value={formData.algorithm} onValueChange={(value) => setFormData(prev => ({ ...prev, algorithm: value }))}>
+            <SelectTrigger id="algorithm">
               <SelectValue />
             </SelectTrigger>
             <SelectContent>
@@ -97,7 +125,7 @@ export default function TDEPage() {
           </Select>
         </div>
         <Button type="submit" disabled={loading}>
-          Enable TDE
+          {loading ? 'Enabling...' : 'Enable TDE'}
         </Button>
       </form>
 
@@ -131,7 +159,7 @@ export default function TDEPage() {
                   disabled={loading || !config.active}
                   onClick={() => handleDisableTDE(config.tableName, config.columnName)}
                 >
-                  Disable
+                  {loading ? 'Disabling...' : 'Disable'}
                 </Button>
               </TableCell>
             </TableRow>
