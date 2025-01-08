@@ -26,7 +26,7 @@ const navigation = [
       { name: "Rman", href: "/rman", icon: Database },
       { name: "Performance", href: "/performance", icon: Activity },
       { name: "Optimisations", href: "/optimisation", icon: LineChart },
-      { name: "High Availability", href: "/ha-settings", icon: ServerCog },
+      { name: "High Availability", href: "/ha", icon: ServerCog },
     ]
   }
 ]
