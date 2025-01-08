@@ -161,3 +161,47 @@ export interface PaginationParams {
   export interface TuningRecommendation {
     recommendations: string
   }
+
+  export interface DataGuardStatus {
+    databaseRole: string;
+    protectionMode: string;
+    protectionLevel: string;
+    switchoverStatus: string;
+    status: string;
+    gapStatus: string;
+    timestamp: Date;
+    statusCode: string;
+    errorMessage: string;
+  }
+  
+  export interface DataGuardConfig {
+    primaryHost: string;
+    primaryPort: number;
+    standbyHost: string;
+    standbyPort: number;
+    sysdbaUsername: string;
+    sysdbaPassword: string;
+    primaryDbName: string;
+    standbyDbName: string;
+  }
+  
+  export interface HaOperationResponse {
+    success: boolean;
+    executionTime: number;
+    message: string;
+    timestamp: Date;
+  }
+  
+  export interface AvailabilityReport {
+    totalSimulations: number;
+    avgFailoverTimeMs: number;
+    avgSwitchbackTimeMs: number;
+    successfulFailovers: number;
+    successfulSwitchbacks: number;
+    failoverSuccessRate: number;
+    switchbackSuccessRate: number;
+    startDate: string;
+    endDate: string;
+    error: string;
+  }
+  

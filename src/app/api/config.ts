@@ -24,4 +24,12 @@ export const endpoints = {
   tuningRecommendations: `${API_BASE_URL}/optimization/optimize-query`,
   gatherTableStats: `${API_BASE_URL}/optimization/gather-stats`,
   scheduleStatsGathering: `${API_BASE_URL}/optimization/schedule-stats`,
+  
+  // High Availability endpoints
+  haStatus: `${API_BASE_URL}/ha/status`,
+  haConfig: `${API_BASE_URL}/ha/configure`,
+  haSimulateFailover: `${API_BASE_URL}/ha/simulate/failover`,
+  haSimulateSwitchback: `${API_BASE_URL}/ha/simulate/switchback`,
+  haReport: `${API_BASE_URL}/ha/report`,
+
 };
