@@ -1,7 +1,4 @@
 # Oracle Manager Dashboard
-
-<div align="center">
-  <img src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/Screenshot%202025-01-09%20at%2023.06.03-UpSUqFEnF2Vxj8MOD6sFWJ1huUidCb.png" alt="Oracle Manager Dashboard" width="800"/>
   
   A modern, feature-rich Oracle database management dashboard built with Next.js
 
