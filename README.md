@@ -1,37 +1,120 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Oracle Manager Dashboard
 
-## Getting Started
+<div align="center">
+  <img src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/Screenshot%202025-01-09%20at%2023.06.03-UpSUqFEnF2Vxj8MOD6sFWJ1huUidCb.png" alt="Oracle Manager Dashboard" width="800"/>
+  
+  A modern, feature-rich Oracle database management dashboard built with Next.js
 
-First, run the development server:
+  [![Next.js](https://img.shields.io/badge/Next.js-13.0+-000000?style=for-the-badge&logo=next.js&logoColor=white)](https://nextjs.org/)
+  [![Oracle](https://img.shields.io/badge/Oracle-19c+-F80000?style=for-the-badge&logo=oracle&logoColor=white)](https://www.oracle.com/database/)
+  [![License](https://img.shields.io/badge/license-MIT-blue.svg?style=for-the-badge)](https://opensource.org/licenses/MIT)
+</div>
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+## 📑 Table of Contents
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+- [Features](#-features)
+- [Architecture](#-architecture)
+- [Getting Started](#-getting-started)
+- [Configuration](#-configuration)
+- [Security Features](#️-security-features)
+- [Performance Monitoring](#-performance-monitoring)
+- [High Availability Features](#-high-availability-features)
+- [Contributing](#-contributing)
+- [License](#-license)
+- [Acknowledgments](#-acknowledgments)
+- [Support](#-support)
+- [FAQ](#-faq)
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## 🌟 Features
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+### User Management
+<img src="/public/screenshots/photo1.png" alt="User Management Interface" width="800"/>
 
-## Learn More
+Comprehensive user administration interface allowing you to:
+- Create, modify, and delete user accounts
+- Set and manage user quotas
+- Monitor account statuses and login attempts
+- Manage password policies and expiration
 
-To learn more about Next.js, take a look at the following resources:
+### Role Management
+<img src="/public/screenshots/photo2.png" alt="Role Management Interface" width="800"/>
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+Efficient role-based access control:
+- Create and manage roles
+- Assign roles to users
+- Define role hierarchies
+- Set role-specific privileges
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+### Privilege Management
+<img src="/public/screenshots/photo3.png" alt="Privilege Management Interface" width="800"/>
 
-## Deploy on Vercel
+Fine-grained control over user and role privileges:
+- Grant and revoke system and object privileges
+- Manage administrative privileges
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+### Security
+<img src="/public/screenshots/photo4.png" alt="Security Dashboard" width="800"/>
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
-# oracle-frontend
+Advanced security features including:
+- Virtual Private Database (VPD) configuration
+- Transparent Data Encryption (TDE) management
+- Comprehensive audit trail and reporting
+- Security policy enforcement
+
+### Backup & Recovery
+<img src="/public/screenshots/photo5.png" alt="Backup & Recovery Interface" width="800"/>
+
+Robust RMAN integration for:
+- Scheduling and managing backups
+- Monitoring backup status and history
+- Performing recovery operations
+- Configuring backup policies
+
+### Performance
+<img src="/public/screenshots/photo6.png" alt="Performance Dashboard" width="800"/>
+
+Real-time performance monitoring:
+- CPU, memory, and I/O utilization
+- Active session history
+- Wait event analysis
+- Tablespace usage and growth trends
+
+### Query Optimization
+<img src="/public/screenshots/photo7.png" alt="Query Optimization Interface" width="800"/>
+
+Advanced tools for query performance:
+- SQL tuning advisor
+- Execution plan analysis
+- Index recommendations
+- Statistics management
+
+### High Availability
+<img src="/public/screenshots/photo8.png" alt="High Availability Dashboard" width="800"/>
+
+Ensure maximum uptime with:
+- Data Guard configuration and monitoring
+- Failover management and testing
+- Load balancing visualization
+
+
+## 🤝 Contributing
+
+Contributions are welcome! Please feel free to submit a Pull Request. For major changes, please open an issue first to discuss what you would like to change.
+
+### Contributors
+- [@zachary013](https://github.com/zachary013)
+- [@Sam-Jab](https://github.com/Sam-Jab)
+
+## 📝 License
+
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+
+## 🙏 Acknowledgments
+
+- Oracle Database documentation and community
+- Next.js framework and community
+- All contributors who have helped with the project
+
+## 📞 Support
+
+If you have any questions or need support, please open an issue in the GitHub repository.
